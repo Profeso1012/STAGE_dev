@@ -8,9 +8,9 @@ const SUBGRAPH_URL = process.env.NEXT_PUBLIC_SUBGRAPH_URL!;
  */
 export async function GET(
     req: Request,
-    { params }: { params: { address: string } }
+    { params }: { params: Promise<{ address: string }> }
 ) {
-    const { address } = params;
+    const { address } = await params;
 
     try {
         // Query for all IPNFTs created by this address
