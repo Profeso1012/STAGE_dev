@@ -5,7 +5,7 @@ import { Zap, Lock, TrendingUp } from "lucide-react";
 export default function UploadPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-background to-background/50">
-            <div className="container max-w-4xl py-10 px-4">
+            <div className="container mx-auto max-w-screen-2xl py-10 px-4">
                 {/* Header */}
                 <div className="mb-12 text-center">
                     <h1 className="text-5xl font-bold text-foreground mb-4 tracking-tight">

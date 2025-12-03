@@ -11,7 +11,7 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative py-20 md:py-32 overflow-hidden">
           <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-          <div className="container relative z-10 px-4 text-center">
+          <div className="container mx-auto max-w-screen-2xl relative z-10 px-4 text-center">
             <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary mb-8 backdrop-blur-sm">
               <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
               Powered by Camp Network
@@ -43,7 +43,7 @@ export default function Home() {
 
         {/* Features Grid */}
         <section className="py-20 bg-secondary/20">
-          <div className="container px-4">
+          <div className="container mx-auto max-w-screen-2xl px-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <Card className="glass-card border-primary/10">
                 <CardHeader>
