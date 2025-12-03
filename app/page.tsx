@@ -53,7 +53,7 @@ export default function Home() {
                 </Button>
               </Link>
               <Link href="/upload">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg h-12 px-8 glass hover:bg-white/10">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg h-12 px-8 glass hover:bg-white/20">
                   <Upload className="mr-2 w-5 h-5" />
                   Upload Content
                 </Button>
