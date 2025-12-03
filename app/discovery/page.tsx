@@ -57,7 +57,7 @@ export default function DiscoveryPage() {
                 } catch (err) {
                     if (err instanceof Error && err.name !== 'AbortError') {
                         console.error(`Failed to check access for ${item.id}:`, err);
-                        nAccessMap[item.id] = false;
+                        newAccessMap[item.id] = false;
                     }
                 }
             }
