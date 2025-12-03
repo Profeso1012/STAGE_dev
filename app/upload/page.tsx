@@ -5,7 +5,7 @@ import { Zap, Lock, TrendingUp } from "lucide-react";
 export default function UploadPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-background to-background/50">
-            <div className="container mx-auto max-w-screen-2xl py-10 px-4">
+            <div className="mx-auto w-4/5 py-10">
                 {/* Header */}
                 <div className="mb-12 text-center">
                     <h1 className="text-5xl font-bold text-foreground mb-4 tracking-tight">
@@ -42,19 +42,17 @@ export default function UploadPage() {
                 </div>
 
                 {/* Upload Form Card */}
-                <div className="flex justify-center">
-                    <Card className="border-border/50 bg-gradient-to-br from-secondary/50 to-secondary/30 backdrop-blur w-full max-w-2xl">
-                        <CardHeader>
-                            <CardTitle className="text-2xl text-foreground">Create New IP-NFT</CardTitle>
-                            <CardDescription className="text-muted-foreground">
-                                Supported formats: Images (PNG, JPG), Audio (MP3, WAV), Text (PDF, MD).
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <UploadForm />
-                        </CardContent>
-                    </Card>
-                </div>
+                <Card className="border-border/50 bg-gradient-to-br from-secondary/50 to-secondary/30 backdrop-blur mx-auto">
+                    <CardHeader>
+                        <CardTitle className="text-2xl text-foreground">Create New IP-NFT</CardTitle>
+                        <CardDescription className="text-muted-foreground">
+                            Supported formats: Images (PNG, JPG), Audio (MP3, WAV), Text (PDF, MD).
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <UploadForm />
+                    </CardContent>
+                </Card>
 
                 {/* Info Section */}
                 <div className="mt-12 bg-secondary/20 border border-border/50 rounded-lg p-6 backdrop-blur">
