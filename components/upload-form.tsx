@@ -32,7 +32,26 @@ export function UploadForm() {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setFile(e.target.files[0]);
+            const selectedFile = e.target.files[0];
+            const maxSizeInMB = 100;
+            const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+            // Validate file size
+            if (selectedFile.size > maxSizeInBytes) {
+                setError(`File size must be less than ${maxSizeInMB}MB. Your file is ${(selectedFile.size / 1024 / 1024).toFixed(2)}MB.`);
+                setFile(null);
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/png', 'audio/mpeg', 'audio/wav', 'application/pdf', 'text/markdown', 'text/plain'];
+            if (!allowedTypes.includes(selectedFile.type)) {
+                setError(`File type not supported. Allowed: images (PNG, JPG), audio (MP3, WAV), documents (PDF), text (MD, TXT).`);
+                setFile(null);
+                return;
+            }
+
+            setFile(selectedFile);
             setAnalysisResult(null);
             setError(null);
         }
