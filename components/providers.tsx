@@ -1,6 +1,6 @@
 "use client";
 
-import { CampProvider } from "@campnetwork/origin/react";
+import { CampProvider, CampModal } from "@campnetwork/origin/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 
@@ -31,6 +31,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                 environment="DEVELOPMENT"
                 redirectUri={redirectUri}
             >
+                <CampModal injectButton={false} />
                 {children}
             </CampProvider>
         </QueryClientProvider>
