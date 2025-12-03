@@ -248,20 +248,22 @@ export function UploadForm() {
                 </div>
 
                 {!analysisResult ? (
-                    <Button
-                        onClick={handleAnalyze}
-                        disabled={analyzing || !file || !title || !description}
-                        className="w-full"
-                    >
-                        {analyzing ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                AI Analyzing...
-                            </>
-                        ) : (
-                            "Analyze Content"
-                        )}
-                    </Button>
+                    <div className="flex justify-center">
+                        <Button
+                            onClick={handleAnalyze}
+                            disabled={analyzing || !file || !title || !description}
+                            className="w-auto px-8"
+                        >
+                            {analyzing ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    AI Analyzing...
+                                </>
+                            ) : (
+                                "Analyze Content"
+                            )}
+                        </Button>
+                    </div>
                 ) : (
                     <div className="space-y-4 border rounded-md p-4 bg-secondary/10">
                         <div className="flex items-center gap-2 text-green-500">
@@ -305,20 +307,22 @@ export function UploadForm() {
                             </div>
                         </div>
 
-                        <Button
-                            onClick={handleMint}
-                            disabled={minting}
-                            className="w-full bg-primary hover:bg-primary/90"
-                        >
-                            {minting ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Minting IP-NFT...
-                                </>
-                            ) : (
-                                "Mint IP-NFT"
-                            )}
-                        </Button>
+                        <div className="flex justify-center pt-4">
+                            <Button
+                                onClick={handleMint}
+                                disabled={minting}
+                                className="w-auto px-8 bg-primary hover:bg-primary/90"
+                            >
+                                {minting ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Minting IP-NFT...
+                                    </>
+                                ) : (
+                                    "Mint IP-NFT"
+                                )}
+                            </Button>
+                        </div>
                     </div>
                 )}
             </div>
