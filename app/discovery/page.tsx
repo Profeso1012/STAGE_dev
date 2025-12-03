@@ -20,10 +20,23 @@ export default function DiscoveryPage() {
     const [transactionHash, setTransactionHash] = useState<string | null>(null);
     const [isPremium, setIsPremium] = useState(false);
 
-    // Check access for discovered items
+    // Check access and premium status
     useEffect(() => {
-        const checkAccess = async () => {
-            if (!isAuthenticated || !origin || !walletAddress) return;
+        const checkAccessAndPremium = async () => {
+            if (!isAuthenticated || !walletAddress) return;
+
+            // Check premium status
+            try {
+                const premiumRes = await fetch(`/api/premium/check-status/${walletAddress}`);
+                const premiumData = await premiumRes.json();
+                setIsPremium(premiumData.isPremium || false);
+            } catch (err) {
+                console.error("Failed to check premium status:", err);
+                setIsPremium(false);
+            }
+
+            // Check access for items
+            if (!origin) return;
 
             const newAccessMap: Record<string, boolean> = {};
             for (const item of results) {
@@ -38,7 +51,7 @@ export default function DiscoveryPage() {
             setAccessMap(newAccessMap);
         };
 
-        checkAccess();
+        checkAccessAndPremium();
     }, [results, isAuthenticated, origin, walletAddress]);
 
     const handleSearch = async (query: string) => {
