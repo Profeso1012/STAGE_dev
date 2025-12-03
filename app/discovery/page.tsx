@@ -146,7 +146,7 @@ export default function DiscoveryPage() {
                         Discover Content
                     </h1>
                     <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                        Find exactly what you're looking for with our AI-powered semantic search.
+                        Find exactly what you&apos;re looking for with our AI-powered semantic search.
                         Browse by relevance, not just popularity.
                     </p>
                     <SearchBar onSearch={handleSearch} loading={searching} />

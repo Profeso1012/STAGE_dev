@@ -179,7 +179,7 @@ export default function ProfilePage() {
                 </div>
             ) : (
                 <div className="text-center py-20 border border-dashed rounded-lg">
-                    <p className="text-muted-foreground mb-4">You haven't uploaded any content yet.</p>
+                    <p className="text-muted-foreground mb-4">You haven&apos;t uploaded any content yet.</p>
                     <Button onClick={() => window.location.href = '/upload'}>Upload Content</Button>
                 </div>
             )}
