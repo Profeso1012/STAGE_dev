@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/50">
       {/* Navigation */}
       <header className="sticky top-0 z-50 w-full border-b border-orange-500/10 bg-slate-950/80 backdrop-blur-md">
         <div className="container flex h-16 max-w-screen-2xl items-center justify-between px-4">
