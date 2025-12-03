@@ -162,15 +162,27 @@ export function UploadForm() {
     return (
         <div className="space-y-6">
             {error && (
-                <div className="p-4 bg-destructive/10 text-destructive rounded-md flex items-center gap-2">
-                    <AlertCircle className="w-5 h-5" />
-                    {error}
+                <div className="p-4 bg-red-500/10 text-red-400 rounded-lg flex items-center gap-3 border border-red-500/30 backdrop-blur">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                    <span className="text-sm">{error}</span>
+                    <button
+                        onClick={() => setError(null)}
+                        className="ml-auto text-red-400 hover:text-red-300"
+                    >
+                        ✕
+                    </button>
                 </div>
             )}
             {success && (
-                <div className="p-4 bg-green-500/10 text-green-500 rounded-md flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5" />
-                    {success}
+                <div className="p-4 bg-green-500/10 text-green-400 rounded-lg flex items-center gap-3 border border-green-500/30 backdrop-blur">
+                    <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                    <span className="text-sm">{success}</span>
+                    <button
+                        onClick={() => setSuccess(null)}
+                        className="ml-auto text-green-400 hover:text-green-300"
+                    >
+                        ✕
+                    </button>
                 </div>
             )}
 
