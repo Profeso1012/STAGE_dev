@@ -7,8 +7,19 @@ function generateMockVector(dim = 1536): number[] {
 
 export async function POST(req: Request) {
     try {
-        const body = await req.json();
-        const { fileUrl, fileType, userDescription, title } = body;
+        const formData = await req.formData();
+        const file = formData.get('file') as File;
+        const title = formData.get('title') as string;
+        const userDescription = formData.get('userDescription') as string;
+
+        if (!file || !title) {
+            return NextResponse.json(
+                { error: "Missing required fields: file and title" },
+                { status: 400 }
+            );
+        }
+
+        const fileType = file.type;
 
         // Simulate AI processing delay
         await new Promise((resolve) => setTimeout(resolve, 2000));
