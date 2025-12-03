@@ -8,8 +8,8 @@ export function SiteFooter() {
 
   return (
     <footer className="border-t border-border/40 bg-background/50 backdrop-blur supports-[backdrop-filter]:bg-background/30">
-      <div className="container max-w-screen-2xl px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      <div className="container mx-auto max-w-screen-2xl px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 justify-items-center md:justify-items-start">
           {/* Brand */}
           <div className="flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity w-fit">
