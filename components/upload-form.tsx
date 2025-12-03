@@ -99,6 +99,20 @@ export function UploadForm() {
             return;
         }
 
+        // Validate inputs
+        const priceNum = parseFloat(price);
+        const royaltyNum = parseFloat(royalty);
+
+        if (isNaN(priceNum) || priceNum < 0.001) {
+            setError("Price must be at least 0.001 CAMP.");
+            return;
+        }
+
+        if (isNaN(royaltyNum) || royaltyNum < 0 || royaltyNum > 100) {
+            setError("Royalty must be between 0% and 100%.");
+            return;
+        }
+
         setMinting(true);
         setError(null);
 
@@ -106,13 +120,13 @@ export function UploadForm() {
             // 1. Create License Terms
             // Price in wei (1 CAMP = 10^18 wei)
             // For simplicity, assuming input is in CAMP
-            const priceWei = BigInt(parseFloat(price) * 1e18);
+            const priceWei = BigInt(Math.floor(priceNum * 1e18));
             // Royalty in bps (1% = 100 bps)
-            const royaltyBps = parseInt(royalty) * 100;
+            const royaltyBps = Math.floor(royaltyNum * 100);
 
             const license = createLicenseTerms(
                 priceWei,
-                86400 * 30, // 30 days duration (example)
+                86400 * 30, // 30 days duration
                 royaltyBps,
                 zeroAddress // Native currency
             );
