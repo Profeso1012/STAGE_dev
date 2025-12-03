@@ -7,26 +7,6 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/50">
-      {/* Navigation */}
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 max-w-screen-2xl items-center justify-between px-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-bold tracking-tight">STAGE</span>
-          </div>
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-            <Link href="/discovery" className="transition-colors hover:text-primary">Discovery</Link>
-            <Link href="/upload" className="transition-colors hover:text-primary">Upload</Link>
-            <Link href="/profile" className="transition-colors hover:text-primary">Profile</Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <AuthButton />
-          </div>
-        </div>
-      </header>
-
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative py-20 md:py-32 overflow-hidden">

@@ -120,14 +120,14 @@ export default function DiscoveryPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900">
+        <div className="min-h-screen bg-gradient-to-b from-background to-background/50">
             <div className="container py-10 px-4">
                 {/* Header */}
                 <div className="text-center mb-12">
-                    <h1 className="text-5xl font-black text-slate-100 mb-4">
+                    <h1 className="text-5xl font-bold text-foreground mb-4">
                         Discover Content
                     </h1>
-                    <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+                    <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
                         Find exactly what you're looking for with our AI-powered semantic search.
                         Browse by relevance, not just popularity.
                     </p>
@@ -164,12 +164,12 @@ export default function DiscoveryPage() {
                 {/* Results */}
                 {searching ? (
                     <div className="flex flex-col items-center justify-center py-20">
-                        <Loader2 className="w-12 h-12 animate-spin text-orange-500 mb-4" />
-                        <p className="text-slate-400">Searching the AI index...</p>
+                        <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
+                        <p className="text-muted-foreground">Searching the AI index...</p>
                     </div>
                 ) : results.length > 0 ? (
                     <div>
-                        <p className="text-slate-400 mb-6">Found {results.length} item{results.length !== 1 ? 's' : ''}</p>
+                        <p className="text-muted-foreground mb-6">Found {results.length} item{results.length !== 1 ? 's' : ''}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {results.map((item) => (
                                 <ContentCard
@@ -186,14 +186,14 @@ export default function DiscoveryPage() {
                 ) : (
                     <div className="text-center py-20">
                         <div className="mb-6 text-6xl">🔍</div>
-                        <p className="text-xl text-slate-300 mb-4">No results yet</p>
-                        <p className="text-slate-400 mb-6">
+                        <p className="text-xl text-foreground mb-4">No results yet</p>
+                        <p className="text-muted-foreground mb-6">
                             {searching ? "Searching..." : "Try searching for something like 'afrobeats', 'abstract art', or 'blockchain'."}
                         </p>
                         {!isAuthenticated && (
                             <Button
                                 onClick={() => connect()}
-                                className="bg-orange-500 hover:bg-orange-600"
+                                className="bg-primary hover:bg-primary/90"
                             >
                                 Connect Wallet to Browse
                             </Button>
