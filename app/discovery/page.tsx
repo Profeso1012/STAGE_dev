@@ -51,7 +51,7 @@ export default function DiscoveryPage() {
             for (const item of results) {
                 try {
                     const tokenId = BigInt(item.id);
-                    const hasAccess = await origin.hasAccess(tokenId, walletAddress);
+                    const hasAccess = await origin.hasAccess(walletAddress, tokenId);
                     if (!controller.signal.aborted) {
                         newAccessMap[item.id] = hasAccess;
                     }
