@@ -18,6 +18,7 @@ export default function DiscoveryPage() {
     const [accessMap, setAccessMap] = useState<Record<string, boolean>>({});
     const [error, setError] = useState<string | null>(null);
     const [transactionHash, setTransactionHash] = useState<string | null>(null);
+    const [isPremium, setIsPremium] = useState(false);
 
     // Check access for discovered items
     useEffect(() => {
