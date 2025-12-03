@@ -178,6 +178,7 @@ export default function DiscoveryPage() {
                                     hasAccess={accessMap[item.id] || false}
                                     onBuy={handleBuy}
                                     buying={buyingId === item.id}
+                                    isPremium={isPremium}
                                 />
                             ))}
                         </div>
