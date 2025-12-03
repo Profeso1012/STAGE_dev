@@ -29,39 +29,31 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative py-20 md:py-40 overflow-hidden">
-          {/* Animated Background Elements */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/20 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-          </div>
-
+        <section className="relative py-20 md:py-32 overflow-hidden">
+          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
           <div className="container relative z-10 px-4 text-center">
-            <div className="inline-flex items-center rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-sm font-semibold text-orange-300 mb-8 backdrop-blur-md hover:border-orange-500/50 transition-colors">
-              <span className="flex h-2 w-2 rounded-full bg-orange-500 mr-2 animate-pulse"></span>
+            <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary mb-8 backdrop-blur-sm">
+              <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
               Powered by Camp Network
             </div>
-
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-6 leading-tight">
-              <span className="block text-slate-100">Talent Discovery</span>
-              <span className="block bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 drop-shadow-lg">Decentralized.</span>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+              Talent Discovery <br />
+              <span className="text-primary">Decentralized.</span>
             </h1>
-
-            <p className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto mb-12 leading-relaxed">
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
               The first AI-powered platform where visibility is earned by relevance, not popularity.
-              Mint your IP-NFT, get discovered, and <span className="text-orange-400 font-semibold">earn real royalties</span>.
+              Mint your IP, get discovered, and earn royalties.
             </p>
-
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/discovery" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full sm:w-auto text-lg h-13 px-10 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-orange-500/50 transition-all">
-                  <Search className="mr-3 w-5 h-5" />
+              <Link href="/discovery">
+                <Button size="lg" className="w-full sm:w-auto text-lg h-12 px-8">
+                  <Search className="mr-2 w-5 h-5" />
                   Start Discovering
                 </Button>
               </Link>
-              <Link href="/upload" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg h-13 px-10 border-orange-500/50 text-orange-400 hover:bg-orange-500/10 hover:border-orange-400 transition-all">
-                  <Upload className="mr-3 w-5 h-5" />
+              <Link href="/upload">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg h-12 px-8 glass hover:bg-white/20">
+                  <Upload className="mr-2 w-5 h-5" />
                   Upload Content
                 </Button>
               </Link>
