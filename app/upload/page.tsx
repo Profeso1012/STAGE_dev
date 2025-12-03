@@ -42,17 +42,19 @@ export default function UploadPage() {
                 </div>
 
                 {/* Upload Form Card */}
-                <Card className="border-border/50 bg-gradient-to-br from-secondary/50 to-secondary/30 backdrop-blur">
-                    <CardHeader>
-                        <CardTitle className="text-2xl text-foreground">Create New IP-NFT</CardTitle>
-                        <CardDescription className="text-muted-foreground">
-                            Supported formats: Images (PNG, JPG), Audio (MP3, WAV), Text (PDF, MD).
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <UploadForm />
-                    </CardContent>
-                </Card>
+                <div className="flex justify-center">
+                    <Card className="border-border/50 bg-gradient-to-br from-secondary/50 to-secondary/30 backdrop-blur w-full max-w-2xl">
+                        <CardHeader>
+                            <CardTitle className="text-2xl text-foreground">Create New IP-NFT</CardTitle>
+                            <CardDescription className="text-muted-foreground">
+                                Supported formats: Images (PNG, JPG), Audio (MP3, WAV), Text (PDF, MD).
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <UploadForm />
+                        </CardContent>
+                    </Card>
+                </div>
 
                 {/* Info Section */}
                 <div className="mt-12 bg-secondary/20 border border-border/50 rounded-lg p-6 backdrop-blur">
