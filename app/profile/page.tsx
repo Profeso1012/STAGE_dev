@@ -22,65 +22,87 @@ export default function ProfilePage() {
     });
 
     useEffect(() => {
-        if (isAuthenticated && walletAddress) {
-            fetchMyContent();
-        }
-    }, [isAuthenticated, walletAddress]);
+        if (!isAuthenticated || !walletAddress) return;
 
-    const fetchMyContent = async () => {
-        setLoading(true);
-        try {
-            // Fetch creator analytics from Subgraph
-            const analyticsRes = await fetch(`/api/analytics/creator/${walletAddress}`);
-            const analyticsData = await analyticsRes.json();
+        const controller = new AbortController();
+        let isMounted = true;
 
-            if (analyticsData.error) {
-                console.error('Analytics error:', analyticsData.error);
-                // Fall back to search if Subgraph fails
-                const res = await fetch(`/api/ai/search`, {
-                    method: "POST",
-                    body: JSON.stringify({ query: "" })
+        const fetchMyContent = async () => {
+            setLoading(true);
+            try {
+                // Fetch creator analytics from Subgraph
+                const analyticsRes = await fetch(`/api/analytics/creator/${walletAddress}`, {
+                    signal: controller.signal
                 });
-                const data = await res.json();
-                if (data.results) {
-                    const mine = data.results.filter((item: MintedItem) =>
-                        item.owner.toLowerCase() === walletAddress?.toLowerCase()
-                    );
-                    setMyContent(mine);
+                const analyticsData = await analyticsRes.json();
+
+                if (!isMounted || controller.signal.aborted) return;
+
+                if (analyticsData.error) {
+                    console.error('Analytics error:', analyticsData.error);
+                    // Fall back to search if Subgraph fails
+                    const res = await fetch(`/api/ai/search`, {
+                        method: "POST",
+                        body: JSON.stringify({ query: "" }),
+                        signal: controller.signal
+                    });
+                    const data = await res.json();
+                    if (isMounted && data.results && !controller.signal.aborted) {
+                        const mine = data.results.filter((item: MintedItem) =>
+                            item.owner.toLowerCase() === walletAddress?.toLowerCase()
+                        );
+                        setMyContent(mine);
+                    }
+                    // Use mock stats as fallback
+                    if (isMounted && !controller.signal.aborted) {
+                        setStats({
+                            totalViews: 0,
+                            totalRevenue: 0,
+                            totalSales: 0
+                        });
+                    }
+                } else {
+                    // Use real on-chain analytics
+                    if (isMounted && !controller.signal.aborted) {
+                        setStats({
+                            totalViews: analyticsData.estimatedViews || 0,
+                            totalRevenue: parseFloat(analyticsData.totalRevenue) || 0,
+                            totalSales: analyticsData.totalSales || 0
+                        });
+                    }
+
+                    // Fetch content details from AI search
+                    const res = await fetch(`/api/ai/search`, {
+                        method: "POST",
+                        body: JSON.stringify({ query: "" }),
+                        signal: controller.signal
+                    });
+                    const data = await res.json();
+                    if (isMounted && data.results && !controller.signal.aborted) {
+                        const mine = data.results.filter((item: MintedItem) =>
+                            item.owner.toLowerCase() === walletAddress?.toLowerCase()
+                        );
+                        setMyContent(mine);
+                    }
                 }
-                // Use mock stats as fallback
-                setStats({
-                    totalViews: 0,
-                    totalRevenue: 0,
-                    totalSales: 0
-                });
-            } else {
-                // Use real on-chain analytics
-                setStats({
-                    totalViews: analyticsData.estimatedViews || 0,
-                    totalRevenue: parseFloat(analyticsData.totalRevenue) || 0,
-                    totalSales: analyticsData.totalSales || 0
-                });
-
-                // Fetch content details from AI search
-                const res = await fetch(`/api/ai/search`, {
-                    method: "POST",
-                    body: JSON.stringify({ query: "" })
-                });
-                const data = await res.json();
-                if (data.results) {
-                    const mine = data.results.filter((item: MintedItem) =>
-                        item.owner.toLowerCase() === walletAddress?.toLowerCase()
-                    );
-                    setMyContent(mine);
+            } catch (error) {
+                if (error instanceof Error && error.name !== 'AbortError') {
+                    console.error("Failed to fetch profile content", error);
+                }
+            } finally {
+                if (isMounted && !controller.signal.aborted) {
+                    setLoading(false);
                 }
             }
-        } catch (error) {
-            console.error("Failed to fetch profile content", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+        };
+
+        fetchMyContent();
+
+        return () => {
+            isMounted = false;
+            controller.abort();
+        };
+    }, [isAuthenticated, walletAddress]);
 
     if (!isAuthenticated) {
         return (
