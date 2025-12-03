@@ -6,12 +6,7 @@ import { useState, useEffect } from "react";
 
 export function Providers({ children }: { children: React.ReactNode }) {
     const [queryClient] = useState(() => new QueryClient());
-    const [redirectUri, setRedirectUri] = useState(() => {
-        if (typeof window !== "undefined") {
-            return window.location.origin;
-        }
-        return "";
-    });
+    const [redirectUri, setRedirectUri] = useState("");
 
     useEffect(() => {
         setRedirectUri(window.location.origin);
