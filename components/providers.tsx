@@ -15,13 +15,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
         setMounted(true);
     }, []);
 
-    // Don't render CampProvider until client is hydrated and provider URL is set
-    if (!mounted || !redirectUri) {
-        return (
-            <QueryClientProvider client={queryClient}>
-                {children}
-            </QueryClientProvider>
-        );
+    // Don't render children until hydration is complete
+    if (!mounted) {
+        return null;
     }
 
     return (
@@ -29,7 +25,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             <CampProvider
                 clientId={process.env.NEXT_PUBLIC_ORIGIN_CLIENT_ID || ""}
                 environment="DEVELOPMENT"
-                redirectUri={redirectUri}
+                redirectUri={redirectUri || window.location.origin}
             >
                 <CampModal injectButton={false} />
                 {children}
