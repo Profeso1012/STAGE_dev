@@ -8,9 +8,9 @@ const SUBGRAPH_URL = process.env.NEXT_PUBLIC_SUBGRAPH_URL!;
  */
 export async function GET(
     req: Request,
-    { params }: { params: { tokenId: string } }
+    { params }: { params: Promise<{ tokenId: string }> }
 ) {
-    const { tokenId } = params;
+    const { tokenId } = await params;
 
     try {
         // Query the Subgraph for AccessPurchased events

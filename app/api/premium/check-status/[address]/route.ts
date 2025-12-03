@@ -13,10 +13,10 @@ const premiumUsers = new Map<string, PremiumSubscription>();
 
 export async function GET(
   req: Request,
-  { params }: { params: { address: string } }
+  { params }: { params: Promise<{ address: string }> }
 ) {
   try {
-    const { address } = params;
+    const { address } = await params;
 
     if (!address || address.length === 0) {
       return NextResponse.json(
