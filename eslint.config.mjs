@@ -1,4 +1,3 @@
-// @ts-check
-import withNuxt from 'eslint-config-next';
+import nextConfig from 'eslint-config-next';
 
-export default withNuxt;
+export default nextConfig;
