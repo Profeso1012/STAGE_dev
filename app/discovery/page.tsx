@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SearchBar } from "@/components/search-bar";
 import { ContentCard } from "@/components/content-card";
 import { MintedItem } from "@/lib/mock-db";
 import { useAuth, useConnect } from "@campnetwork/origin/react";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function DiscoveryPage() {
     const { origin, isAuthenticated, walletAddress } = useAuth();
@@ -14,11 +15,35 @@ export default function DiscoveryPage() {
     const [results, setResults] = useState<MintedItem[]>([]);
     const [searching, setSearching] = useState(false);
     const [buyingId, setBuyingId] = useState<string | null>(null);
-    // Mock state for access (in real app, we check origin.hasAccess)
     const [accessMap, setAccessMap] = useState<Record<string, boolean>>({});
+    const [error, setError] = useState<string | null>(null);
+    const [transactionHash, setTransactionHash] = useState<string | null>(null);
+
+    // Check access for discovered items
+    useEffect(() => {
+        const checkAccess = async () => {
+            if (!isAuthenticated || !origin || !walletAddress) return;
+
+            const newAccessMap: Record<string, boolean> = {};
+            for (const item of results) {
+                try {
+                    const hasAccess = await origin.hasAccess(BigInt(item.id), walletAddress);
+                    newAccessMap[item.id] = hasAccess;
+                } catch (err) {
+                    console.error(`Failed to check access for ${item.id}:`, err);
+                    newAccessMap[item.id] = false;
+                }
+            }
+            setAccessMap(newAccessMap);
+        };
+
+        checkAccess();
+    }, [results, isAuthenticated, origin, walletAddress]);
 
     const handleSearch = async (query: string) => {
         setSearching(true);
+        setError(null);
+        setResults([]);
         try {
             const res = await fetch("/api/ai/search", {
                 method: "POST",
@@ -28,73 +53,139 @@ export default function DiscoveryPage() {
             const data = await res.json();
             if (data.results) {
                 setResults(data.results);
+            } else if (data.error) {
+                setError(data.error);
             }
-        } catch (error) {
-            console.error("Search failed:", error);
+        } catch (err) {
+            console.error("Search failed:", err);
+            setError("Failed to search. Please try again.");
         } finally {
             setSearching(false);
         }
     };
 
     const handleBuy = async (item: MintedItem) => {
-        if (!isAuthenticated || !origin) {
+        if (!isAuthenticated) {
             connect();
             return;
         }
 
+        if (!origin || !walletAddress) {
+            setError("Authentication failed. Please reconnect your wallet.");
+            return;
+        }
+
         setBuyingId(item.id);
+        setError(null);
+        setTransactionHash(null);
+
         try {
-            // 1. Check if already has access (real app)
-            // const hasAccess = await origin.hasAccess(BigInt(item.id), walletAddress);
-            // if (hasAccess) ...
+            // Check if already has access
+            const hasAccess = await origin.hasAccess(BigInt(item.id), walletAddress);
+            if (hasAccess) {
+                setError("You already have access to this content.");
+                setBuyingId(null);
+                return;
+            }
 
-            // 2. Buy Access
-            // await origin.buyAccessSmart(BigInt(item.id));
+            // Buy Access
+            const result = await origin.buyAccessSmart(BigInt(item.id));
 
-            // Mock delay
-            await new Promise(r => setTimeout(r, 2000));
+            if (result) {
+                setAccessMap(prev => ({ ...prev, [item.id]: true }));
+                setTransactionHash(result.hash || "success");
+            }
 
-            setAccessMap(prev => ({ ...prev, [item.id]: true }));
-
-        } catch (error) {
-            console.error("Buy access failed:", error);
-            alert("Failed to buy access. See console.");
+        } catch (err: any) {
+            console.error("Buy access failed:", err);
+            const errorMsg = err.message || err.reason || "Failed to buy access. Please try again.";
+            setError(errorMsg);
         } finally {
             setBuyingId(null);
         }
     };
 
     return (
-        <div className="container py-10 px-4 min-h-screen">
-            <div className="text-center mb-12">
-                <h1 className="text-4xl font-bold mb-4">Discover Content</h1>
-                <p className="text-muted-foreground mb-8">
-                    Find exactly what you need with our AI-powered semantic search.
-                </p>
-                <SearchBar onSearch={handleSearch} loading={searching} />
-            </div>
+        <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900">
+            <div className="container py-10 px-4">
+                {/* Header */}
+                <div className="text-center mb-12">
+                    <h1 className="text-5xl font-black text-slate-100 mb-4">
+                        Discover Content
+                    </h1>
+                    <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+                        Find exactly what you're looking for with our AI-powered semantic search.
+                        Browse by relevance, not just popularity.
+                    </p>
+                    <SearchBar onSearch={handleSearch} loading={searching} />
+                </div>
 
-            {searching ? (
-                <div className="flex justify-center py-20">
-                    <Loader2 className="w-10 h-10 animate-spin text-primary" />
-                </div>
-            ) : results.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {results.map((item) => (
-                        <ContentCard
-                            key={item.id}
-                            item={item}
-                            hasAccess={!!accessMap[item.id]}
-                            onBuy={handleBuy}
-                            buying={buyingId === item.id}
-                        />
-                    ))}
-                </div>
-            ) : (
-                <div className="text-center py-20 text-muted-foreground">
-                    {results.length === 0 && !searching ? "Search for something to see results." : "No results found."}
-                </div>
-            )}
+                {/* Error Message */}
+                {error && (
+                    <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3 text-red-400">
+                        <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                        <span>{error}</span>
+                        <button
+                            onClick={() => setError(null)}
+                            className="ml-auto text-red-400 hover:text-red-300"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                )}
+
+                {/* Transaction Success */}
+                {transactionHash && (
+                    <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg flex items-center gap-3 text-green-400">
+                        <span>✓ Purchase successful! Access granted.</span>
+                        <button
+                            onClick={() => setTransactionHash(null)}
+                            className="ml-auto text-green-400 hover:text-green-300"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                )}
+
+                {/* Results */}
+                {searching ? (
+                    <div className="flex flex-col items-center justify-center py-20">
+                        <Loader2 className="w-12 h-12 animate-spin text-orange-500 mb-4" />
+                        <p className="text-slate-400">Searching the AI index...</p>
+                    </div>
+                ) : results.length > 0 ? (
+                    <div>
+                        <p className="text-slate-400 mb-6">Found {results.length} item{results.length !== 1 ? 's' : ''}</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {results.map((item) => (
+                                <ContentCard
+                                    key={item.id}
+                                    item={item}
+                                    hasAccess={accessMap[item.id] || false}
+                                    onBuy={handleBuy}
+                                    buying={buyingId === item.id}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                    <div className="text-center py-20">
+                        <div className="mb-6 text-6xl">🔍</div>
+                        <p className="text-xl text-slate-300 mb-4">No results yet</p>
+                        <p className="text-slate-400 mb-6">
+                            {searching ? "Searching..." : "Try searching for something like 'afrobeats', 'abstract art', or 'blockchain'."}
+                        </p>
+                        {!isAuthenticated && (
+                            <Button
+                                onClick={() => connect()}
+                                className="bg-orange-500 hover:bg-orange-600"
+                            >
+                                Connect Wallet to Browse
+                            </Button>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
