@@ -1,0 +1,11 @@
+# Camp Network Configuration (TESTNET)
+NEXT_PUBLIC_ORIGIN_CLIENT_ID=fce77d7a-8085-47ca-adff-306a933e76aa
+NEXT_PUBLIC_SUBGRAPH_URL=https://api.goldsky.com/api/public/project_clu8sr03ji34301z2b4xte1g5/subgraphs/camp-origin-testnet-upgadable/1.0.0/gn
+NEXT_PUBLIC_CAMP_RPC_URL=https://rpc.basecamp.t.raas.gelato.cloud
+NEXT_PUBLIC_CAMP_CHAIN_ID=123420001114
+
+# Origin API
+NEXT_PUBLIC_ORIGIN_API=https://api.origin.campnetwork.xyz
+
+# AI Service (Mock for now)
+NEXT_PUBLIC_AI_SERVICE_URL=/api/ai
