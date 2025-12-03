@@ -114,7 +114,7 @@ export default function DiscoveryPage() {
 
         try {
             // Check if already has access
-            const hasAccess = await origin.hasAccess(BigInt(item.id), walletAddress);
+            const hasAccess = await origin.hasAccess(walletAddress as Address, BigInt(item.id));
             if (hasAccess) {
                 setError("You already have access to this content.");
                 setBuyingId(null);
