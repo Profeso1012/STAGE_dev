@@ -23,36 +23,52 @@ export default function DiscoveryPage() {
 
     // Check access and premium status
     useEffect(() => {
+        const controller = new AbortController();
+
         const checkAccessAndPremium = async () => {
             if (!isAuthenticated || !walletAddress) return;
 
             // Check premium status
             try {
-                const premiumRes = await fetch(`/api/premium/check-status/${walletAddress}`);
+                const premiumRes = await fetch(`/api/premium/check-status/${walletAddress}`, {
+                    signal: controller.signal
+                });
                 const premiumData = await premiumRes.json();
-                setIsPremium(premiumData.isPremium || false);
+                if (!controller.signal.aborted) {
+                    setIsPremium(premiumData.isPremium || false);
+                }
             } catch (err) {
-                console.error("Failed to check premium status:", err);
-                setIsPremium(false);
+                if (err instanceof Error && err.name !== 'AbortError') {
+                    console.error("Failed to check premium status:", err);
+                    setIsPremium(false);
+                }
             }
 
             // Check access for items
-            if (!origin) return;
+            if (!origin || controller.signal.aborted) return;
 
             const newAccessMap: Record<string, boolean> = {};
             for (const item of results) {
                 try {
                     const hasAccess = await origin.hasAccess(BigInt(item.id), walletAddress);
-                    newAccessMap[item.id] = hasAccess;
+                    if (!controller.signal.aborted) {
+                        newAccessMap[item.id] = hasAccess;
+                    }
                 } catch (err) {
-                    console.error(`Failed to check access for ${item.id}:`, err);
-                    newAccessMap[item.id] = false;
+                    if (err instanceof Error && err.name !== 'AbortError') {
+                        console.error(`Failed to check access for ${item.id}:`, err);
+                        newAccessMap[item.id] = false;
+                    }
                 }
             }
-            setAccessMap(newAccessMap);
+            if (!controller.signal.aborted) {
+                setAccessMap(newAccessMap);
+            }
         };
 
         checkAccessAndPremium();
+
+        return () => controller.abort();
     }, [results, isAuthenticated, origin, walletAddress]);
 
     const handleSearch = async (query: string) => {
