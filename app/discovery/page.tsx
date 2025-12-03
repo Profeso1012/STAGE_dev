@@ -50,14 +50,14 @@ export default function DiscoveryPage() {
             const newAccessMap: Record<string, boolean> = {};
             for (const item of results) {
                 try {
-                    const hasAccess = await origin.hasAccess(BigInt(item.id), walletAddress);
+                    const hasAccess = await origin.hasAccess(`0x${item.id}` as `0x${string}`, walletAddress);
                     if (!controller.signal.aborted) {
                         newAccessMap[item.id] = hasAccess;
                     }
                 } catch (err) {
                     if (err instanceof Error && err.name !== 'AbortError') {
                         console.error(`Failed to check access for ${item.id}:`, err);
-                        newAccessMap[item.id] = false;
+                        nAccessMap[item.id] = false;
                     }
                 }
             }
