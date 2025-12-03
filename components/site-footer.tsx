@@ -8,10 +8,10 @@ export function SiteFooter() {
 
   return (
     <footer className="border-t border-border/40 bg-background/50 backdrop-blur supports-[backdrop-filter]:bg-background/30">
-      <div className="container mx-auto max-w-screen-2xl px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-8">
+      <div className="mx-auto max-w-screen-2xl px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-8">
           {/* Brand */}
-          <div className="flex flex-col gap-4 md:col-span-1">
+          <div className="flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity w-fit">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
@@ -24,7 +24,7 @@ export function SiteFooter() {
           </div>
 
           {/* Navigation */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 md:px-4">
             <h4 className="font-semibold text-sm">Navigation</h4>
             <nav className="flex flex-col gap-2">
               <Link href="/discovery" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -43,7 +43,7 @@ export function SiteFooter() {
           </div>
 
           {/* Resources */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 md:px-4">
             <h4 className="font-semibold text-sm">Resources</h4>
             <nav className="flex flex-col gap-2">
               <a href="https://camp.network" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -59,7 +59,7 @@ export function SiteFooter() {
           </div>
 
           {/* Social */}
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 md:px-4">
             <h4 className="font-semibold text-sm">Connect</h4>
             <div className="flex gap-3">
               <a
