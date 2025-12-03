@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Address } from "viem";
 import { SearchBar } from "@/components/search-bar";
 import { ContentCard } from "@/components/content-card";
 import { MintedItem } from "@/lib/mock-db";
@@ -51,7 +52,7 @@ export default function DiscoveryPage() {
             for (const item of results) {
                 try {
                     const tokenId = BigInt(item.id);
-                    const hasAccess = await origin.hasAccess(walletAddress, tokenId);
+                    const hasAccess = await origin.hasAccess(walletAddress as Address, tokenId);
                     if (!controller.signal.aborted) {
                         newAccessMap[item.id] = hasAccess;
                     }
