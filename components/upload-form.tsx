@@ -48,17 +48,15 @@ export function UploadForm() {
         setError(null);
 
         try {
-            // In a real app, we would upload the file to a temp storage or IPFS first to get a URL
-            // For this mock, we'll just pass a fake URL
+            // Create FormData to send the actual file
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('title', title);
+            formData.append('userDescription', description);
+
             const res = await fetch("/api/ai/analyze", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    fileUrl: "https://mock-ipfs.io/file",
-                    fileType: file.type,
-                    userDescription: description,
-                    title: title,
-                }),
+                body: formData, // Send as multipart/form-data
             });
 
             const data = await res.json();
