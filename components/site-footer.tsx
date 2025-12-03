@@ -2,15 +2,20 @@
 
 import Link from "next/link";
 import { Sparkles, Github, Twitter, Mail } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function SiteFooter() {
-  const currentYear = new Date().getFullYear();
+  const [currentYear, setCurrentYear] = useState(2024);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
 
   return (
     <footer className="border-t border-border/40 bg-background/50 backdrop-blur supports-[backdrop-filter]:bg-background/30">
       <div className="w-full py-12">
-        <div className="mx-auto max-w-6xl px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-8">
             {/* Brand */}
             <div className="flex flex-col gap-4">
               <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity w-fit">

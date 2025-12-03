@@ -93,7 +93,7 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="container mx-auto max-w-screen-2xl py-10 px-4 min-h-screen">
+        <div className="container mx-auto max-w-screen-2xl py-10 px-4 sm:px-6 lg:px-8 min-h-screen">
             <div className="flex items-center gap-4 mb-8">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
                     <User className="w-8 h-8 text-primary" />
@@ -109,7 +109,7 @@ export default function ProfilePage() {
                 <Card className="glass-card">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Total Views</CardTitle>
-                        <Eye className="h-4 w-4 text-muted-foreground" />
+                        <Eye className="h-4 w-4 text-muted-foreground ml-2" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{stats.totalViews.toLocaleString()}</div>
@@ -119,7 +119,7 @@ export default function ProfilePage() {
                 <Card className="glass-card">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                        <DollarSign className="h-4 w-4 text-muted-foreground ml-2" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{stats.totalRevenue.toFixed(6)} CAMP</div>
@@ -129,7 +129,7 @@ export default function ProfilePage() {
                 <Card className="glass-card">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Access Sales</CardTitle>
-                        <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                        <BarChart3 className="h-4 w-4 text-muted-foreground ml-2" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{stats.totalSales}</div>
