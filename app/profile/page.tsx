@@ -84,7 +84,7 @@ export default function ProfilePage() {
 
     if (!isAuthenticated) {
         return (
-            <div className="container py-20 text-center">
+            <div className="container mx-auto max-w-screen-2xl py-20 px-4 text-center">
                 <h1 className="text-3xl font-bold mb-4">Creator Dashboard</h1>
                 <p className="text-muted-foreground mb-8">Connect your wallet to view your content performance and analytics.</p>
                 <Button onClick={() => connect()}>Connect Wallet</Button>
@@ -93,7 +93,7 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="container py-10 px-4 min-h-screen">
+        <div className="container mx-auto max-w-screen-2xl py-10 px-4 min-h-screen">
             <div className="flex items-center gap-4 mb-8">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
                     <User className="w-8 h-8 text-primary" />
