@@ -8,27 +8,18 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/50">
       {/* Navigation */}
-      <header className="sticky top-0 z-50 w-full border-b border-orange-500/10 bg-slate-950/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 max-w-screen-2xl items-center justify-between px-4">
-          <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg group-hover:shadow-orange-500/20 transition-all">
-              <Sparkles className="w-6 h-6 text-white" />
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-orange-600">STAGE</span>
+            <span className="text-xl font-bold tracking-tight">STAGE</span>
           </div>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-semibold">
-            <Link href="/discovery" className="text-slate-300 transition-all hover:text-orange-400 relative group">
-              Discovery
-              <span className="absolute inset-x-0 bottom-0 h-0.5 bg-orange-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-            </Link>
-            <Link href="/upload" className="text-slate-300 transition-all hover:text-orange-400 relative group">
-              Upload
-              <span className="absolute inset-x-0 bottom-0 h-0.5 bg-orange-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-            </Link>
-            <Link href="/profile" className="text-slate-300 transition-all hover:text-orange-400 relative group">
-              Profile
-              <span className="absolute inset-x-0 bottom-0 h-0.5 bg-orange-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-            </Link>
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <Link href="/discovery" className="transition-colors hover:text-primary">Discovery</Link>
+            <Link href="/upload" className="transition-colors hover:text-primary">Upload</Link>
+            <Link href="/profile" className="transition-colors hover:text-primary">Profile</Link>
           </nav>
           <div className="flex items-center gap-4">
             <AuthButton />
