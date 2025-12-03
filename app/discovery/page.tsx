@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { SearchBar } from "@/components/search-bar";
 import { ContentCard } from "@/components/content-card";
 import { MintedItem } from "@/lib/mock-db";
-import { useAuth, useConnect } from "@campnetwork/origin/react";
+import { useAuth, useModal, useAuthState } from "@campnetwork/origin/react";
 import { Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function DiscoveryPage() {
     const { origin, isAuthenticated, walletAddress } = useAuth();
-    const { connect } = useConnect();
+    const authState = useAuthState();
+    const modal = useModal();
 
     const [results, setResults] = useState<MintedItem[]>([]);
     const [searching, setSearching] = useState(false);
@@ -80,7 +81,7 @@ export default function DiscoveryPage() {
 
     const handleBuy = async (item: MintedItem) => {
         if (!isAuthenticated) {
-            connect();
+            modal.openModal();
             return;
         }
 
@@ -192,7 +193,7 @@ export default function DiscoveryPage() {
                         </p>
                         {!isAuthenticated && (
                             <Button
-                                onClick={() => connect()}
+                                onClick={() => modal.openModal()}
                                 className="bg-primary hover:bg-primary/90"
                             >
                                 Connect Wallet to Browse
