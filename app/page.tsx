@@ -9,8 +9,8 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-background/50">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative py-20 md:py-32 overflow-hidden bg-cover bg-center bg-no-repeat" style={{backgroundImage: "url('https://cdn.builder.io/api/v1/image/assets%2Fe7d6e6588b2240528723df58a8e77493%2F9105b378f0d846f3a0e1a22d6c361c0c?format=webp&width=800')"}}>
-          <div className="absolute inset-0 bg-black/40" />
+        <section className="relative py-20 md:py-32 overflow-hidden bg-cover bg-center bg-no-repeat" style={{backgroundImage: "url('https://cdn.builder.io/api/v1/image/assets%2Fe7d6e6588b2240528723df58a8e77493%2F9105b378f0d846f3a0e1a22d6c361c0c?format=webp')", backgroundAttachment: "fixed"}}>
+          <div className="absolute inset-0 bg-black/30" />
           <div className="container mx-auto max-w-screen-2xl relative z-10 px-4 text-center">
             <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary mb-8 backdrop-blur-sm">
               <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
