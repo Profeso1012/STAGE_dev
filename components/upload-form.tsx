@@ -198,139 +198,147 @@ export function UploadForm() {
     }
 
     return (
-        <div className="space-y-6">
-            {error && (
-                <div className="p-4 bg-red-500/10 text-red-400 rounded-lg flex items-center gap-3 border border-red-500/30 backdrop-blur">
-                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                    <span className="text-sm">{error}</span>
-                    <button
-                        onClick={() => setError(null)}
-                        className="ml-auto text-red-400 hover:text-red-300"
-                    >
-                        ✕
-                    </button>
-                </div>
-            )}
-            {success && (
-                <div className="p-4 bg-green-500/10 text-green-400 rounded-lg flex items-center gap-3 border border-green-500/30 backdrop-blur">
-                    <CheckCircle className="w-5 h-5 flex-shrink-0" />
-                    <span className="text-sm">{success}</span>
-                    <button
-                        onClick={() => setSuccess(null)}
-                        className="ml-auto text-green-400 hover:text-green-300"
-                    >
-                        ✕
-                    </button>
-                </div>
-            )}
-
-            <div className="space-y-4">
-                <div className="grid w-full max-w-sm items-center gap-1.5">
-                    <Label htmlFor="file">Content File</Label>
-                    <Input id="file" type="file" onChange={handleFileChange} disabled={minting} />
-                </div>
-
-                <div className="grid w-full gap-1.5">
-                    <Label htmlFor="title">Title</Label>
-                    <Input
-                        id="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="e.g. My Awesome Track"
-                        disabled={minting}
-                    />
-                </div>
-
-                <div className="grid w-full gap-1.5">
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea
-                        id="description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder="Describe your content..."
-                        disabled={minting}
-                    />
-                </div>
-
-                {!analysisResult ? (
-                    <div className="flex justify-center">
-                        <Button
-                            onClick={handleAnalyze}
-                            disabled={analyzing || !file || !title || !description}
-                            className="w-auto px-8"
+        <>
+            <UnsupportedFileModal
+                isOpen={unsupportedFile !== null}
+                fileName={unsupportedFile?.name || ""}
+                fileType={unsupportedFile?.type || "unknown"}
+                onClose={() => setUnsupportedFile(null)}
+            />
+            <div className="space-y-6">
+                {error && (
+                    <div className="p-4 bg-red-500/10 text-red-400 rounded-lg flex items-center gap-3 border border-red-500/30 backdrop-blur">
+                        <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                        <span className="text-sm">{error}</span>
+                        <button
+                            onClick={() => setError(null)}
+                            className="ml-auto text-red-400 hover:text-red-300"
                         >
-                            {analyzing ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    AI Analyzing...
-                                </>
-                            ) : (
-                                "Analyze Content"
-                            )}
-                        </Button>
+                            ✕
+                        </button>
                     </div>
-                ) : (
-                    <div className="space-y-4 border rounded-md p-4 bg-secondary/10">
-                        <div className="flex items-center gap-2 text-green-500">
-                            <CheckCircle className="w-5 h-5" />
-                            <span className="font-semibold">AI Analysis Complete</span>
-                        </div>
+                )}
+                {success && (
+                    <div className="p-4 bg-green-500/10 text-green-400 rounded-lg flex items-center gap-3 border border-green-500/30 backdrop-blur">
+                        <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                        <span className="text-sm">{success}</span>
+                        <button
+                            onClick={() => setSuccess(null)}
+                            className="ml-auto text-green-400 hover:text-green-300"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                )}
 
-                        <div className="space-y-2 text-sm">
-                            <p><span className="font-semibold">Feedback:</span> {analysisResult.feedback}</p>
-                            <p><span className="font-semibold">Enhanced Description:</span> {analysisResult.enhancedDescription}</p>
-                            <div className="flex flex-wrap gap-2">
-                                {analysisResult.tags.map((tag: string) => (
-                                    <span key={tag} className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">
-                                        #{tag}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
+                <div className="space-y-4">
+                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                        <Label htmlFor="file">Content File</Label>
+                        <Input id="file" type="file" onChange={handleFileChange} disabled={minting} />
+                    </div>
 
-                        <div className="grid grid-cols-2 gap-4 pt-4 border-t">
-                            <div className="grid gap-1.5">
-                                <Label htmlFor="price">Price (CAMP)</Label>
-                                <Input
-                                    id="price"
-                                    type="number"
-                                    value={price}
-                                    onChange={(e) => setPrice(e.target.value)}
-                                    step="0.001"
-                                />
-                            </div>
-                            <div className="grid gap-1.5">
-                                <Label htmlFor="royalty">Royalty (%)</Label>
-                                <Input
-                                    id="royalty"
-                                    type="number"
-                                    value={royalty}
-                                    onChange={(e) => setRoyalty(e.target.value)}
-                                    min="0"
-                                    max="100"
-                                />
-                            </div>
-                        </div>
+                    <div className="grid w-full gap-1.5">
+                        <Label htmlFor="title">Title</Label>
+                        <Input
+                            id="title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="e.g. My Awesome Track"
+                            disabled={minting}
+                        />
+                    </div>
 
-                        <div className="flex justify-center pt-4">
+                    <div className="grid w-full gap-1.5">
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea
+                            id="description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Describe your content..."
+                            disabled={minting}
+                        />
+                    </div>
+
+                    {!analysisResult ? (
+                        <div className="flex justify-center">
                             <Button
-                                onClick={handleMint}
-                                disabled={minting}
-                                className="w-auto px-8 bg-primary hover:bg-primary/90"
+                                onClick={handleAnalyze}
+                                disabled={analyzing || !file || !title || !description}
+                                className="w-auto px-8"
                             >
-                                {minting ? (
+                                {analyzing ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Minting IP-NFT...
+                                        AI Analyzing...
                                     </>
                                 ) : (
-                                    "Mint IP-NFT"
+                                    "Analyze Content"
                                 )}
                             </Button>
                         </div>
-                    </div>
-                )}
+                    ) : (
+                        <div className="space-y-4 border rounded-md p-4 bg-secondary/10">
+                            <div className="flex items-center gap-2 text-green-500">
+                                <CheckCircle className="w-5 h-5" />
+                                <span className="font-semibold">AI Analysis Complete</span>
+                            </div>
+
+                            <div className="space-y-2 text-sm">
+                                <p><span className="font-semibold">Feedback:</span> {analysisResult.feedback}</p>
+                                <p><span className="font-semibold">Enhanced Description:</span> {analysisResult.enhancedDescription}</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {analysisResult.tags.map((tag: string) => (
+                                        <span key={tag} className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs">
+                                            #{tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                                <div className="grid gap-1.5">
+                                    <Label htmlFor="price">Price (CAMP)</Label>
+                                    <Input
+                                        id="price"
+                                        type="number"
+                                        value={price}
+                                        onChange={(e) => setPrice(e.target.value)}
+                                        step="0.001"
+                                    />
+                                </div>
+                                <div className="grid gap-1.5">
+                                    <Label htmlFor="royalty">Royalty (%)</Label>
+                                    <Input
+                                        id="royalty"
+                                        type="number"
+                                        value={royalty}
+                                        onChange={(e) => setRoyalty(e.target.value)}
+                                        min="0"
+                                        max="100"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex justify-center pt-4">
+                                <Button
+                                    onClick={handleMint}
+                                    disabled={minting}
+                                    className="w-auto px-8 bg-primary hover:bg-primary/90"
+                                >
+                                    {minting ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Minting IP-NFT...
+                                        </>
+                                    ) : (
+                                        "Mint IP-NFT"
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+        </>
     );
 }
