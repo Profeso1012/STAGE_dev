@@ -11,6 +11,8 @@ import { Loader2, Upload, CheckCircle, AlertCircle } from "lucide-react";
 import { createLicenseTerms } from "@campnetwork/origin";
 import { zeroAddress } from "viem";
 import { useRouter } from "next/navigation";
+import { isFileSupported, getFileCategory, getSupportedFileTypes } from "@/lib/file-validation";
+import { UnsupportedFileModal } from "@/components/unsupported-file-modal";
 
 export function UploadForm() {
     const { origin, isAuthenticated, walletAddress } = useAuth();
@@ -25,6 +27,7 @@ export function UploadForm() {
     const [minting, setMinting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [unsupportedFile, setUnsupportedFile] = useState<{ name: string; type: any } | null>(null);
 
     // License Terms State
     const [price, setPrice] = useState("0.001"); // in CAMP (ETH)
@@ -44,16 +47,18 @@ export function UploadForm() {
             }
 
             // Validate file type
-            const allowedTypes = ['image/jpeg', 'image/png', 'audio/mpeg', 'audio/wav', 'application/pdf', 'text/markdown', 'text/plain'];
-            if (!allowedTypes.includes(selectedFile.type)) {
-                setError(`File type not supported. Allowed: images (PNG, JPG), audio (MP3, WAV), documents (PDF), text (MD, TXT).`);
+            if (!isFileSupported(selectedFile)) {
+                const fileType = getFileCategory(selectedFile);
+                setUnsupportedFile({ name: selectedFile.name, type: fileType });
                 setFile(null);
+                setError(null);
                 return;
             }
 
             setFile(selectedFile);
             setAnalysisResult(null);
             setError(null);
+            setUnsupportedFile(null);
         }
     };
 

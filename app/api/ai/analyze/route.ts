@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
 
-// Mock function to generate a random vector
-function generateMockVector(dim = 1536): number[] {
-    return Array.from({ length: dim }, () => Math.random() - 0.5);
-}
+const AI_SERVICE_URL = 'https://web3-semantic-search.onrender.com';
 
 export async function POST(req: Request) {
     try {
@@ -19,42 +16,51 @@ export async function POST(req: Request) {
             );
         }
 
-        const fileType = file.type;
+        // Convert File to Buffer for the external API
+        const buffer = await file.arrayBuffer();
+        const uint8Array = new Uint8Array(buffer);
 
-        // Simulate AI processing delay
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Create FormData for the external API
+        const externalFormData = new FormData();
+        const blob = new Blob([uint8Array], { type: file.type });
+        externalFormData.append('file', blob, file.name);
+        externalFormData.append('title', title);
+        externalFormData.append('userDescription', userDescription);
 
-        // Simple mock logic for "Verification"
-        const isMatch = true; // Assume match for now, or randomize
-        const confidenceScore = 0.95;
+        // Call the external AI service
+        const response = await fetch(`${AI_SERVICE_URL}/analyze`, {
+            method: 'POST',
+            body: externalFormData,
+        });
 
-        // Mock "Enhanced Description" based on file type
-        let enhancedDescription = userDescription;
-        let tags = ["content"];
-
-        if (fileType.startsWith("image")) {
-            enhancedDescription = `[AI Enhanced] A high-quality visual representation of ${title}. ${userDescription}`;
-            tags = ["image", "visual", "art", "creative"];
-        } else if (fileType.startsWith("audio")) {
-            enhancedDescription = `[AI Enhanced] A clear audio recording featuring ${title}. ${userDescription}`;
-            tags = ["audio", "music", "sound", "recording"];
-        } else if (fileType.startsWith("text") || fileType === "application/pdf") {
-            enhancedDescription = `[AI Enhanced] A detailed document about ${title}. ${userDescription}`;
-            tags = ["text", "document", "article", "writing"];
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+                errorData.error || `AI service returned ${response.status}`
+            );
         }
 
-        const response = {
-            isMatch,
-            confidenceScore,
-            feedback: isMatch ? "The description accurately depicts the content." : "Potential mismatch detected.",
-            enhancedDescription,
-            tags,
-            contentVector: generateMockVector(),
-        };
+        const data = await response.json();
 
-        return NextResponse.json(response);
+        // Ensure response has required fields
+        if (!data.enhancedDescription || !data.tags || !data.contentVector) {
+            throw new Error('Invalid response format from AI service');
+        }
+
+        return NextResponse.json({
+            isMatch: data.isMatch !== false,
+            confidenceScore: data.confidenceScore ?? 0.85,
+            feedback: data.feedback || "Analysis completed successfully.",
+            enhancedDescription: data.enhancedDescription,
+            tags: data.tags,
+            contentVector: data.contentVector,
+        });
     } catch (error) {
         console.error("AI Analysis Error:", error);
-        return NextResponse.json({ error: "Failed to analyze content" }, { status: 500 });
+        const message = error instanceof Error ? error.message : "Failed to analyze content";
+        return NextResponse.json(
+            { error: message },
+            { status: 500 }
+        );
     }
 }
