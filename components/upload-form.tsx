@@ -113,10 +113,14 @@ export function UploadForm() {
 
             const data = await res.json();
             console.log("[AI ANALYSIS] Response data:", data);
+            console.log("[AI ANALYSIS] Response details:", data.details);
 
             if (data.error) {
                 const errorMsg = data.error;
                 console.error("[AI ANALYSIS] API returned error:", errorMsg);
+                if (data.details) {
+                    console.error("[AI ANALYSIS] Error details:", data.details);
+                }
                 throw new Error(errorMsg);
             }
 
