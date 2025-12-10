@@ -62,14 +62,23 @@ export async function POST(req: Request) {
 
         const data = await response.json();
         console.log("[API:ANALYZE] Response data parsed");
+        console.log("[API:ANALYZE] Full raw response:", JSON.stringify(data, null, 2));
         console.log("[API:ANALYZE] Response keys:", Object.keys(data));
+        console.log("[API:ANALYZE] Enhanced description:", data.enhancedDescription);
+        console.log("[API:ANALYZE] Enhanced description type:", typeof data.enhancedDescription);
         console.log("[API:ANALYZE] Enhanced description length:", data.enhancedDescription?.length);
         console.log("[API:ANALYZE] Tags:", data.tags);
+        console.log("[API:ANALYZE] Tags type:", typeof data.tags);
+        console.log("[API:ANALYZE] Content vector:", data.contentVector);
+        console.log("[API:ANALYZE] Content vector type:", typeof data.contentVector);
         console.log("[API:ANALYZE] Content vector length:", data.contentVector?.length);
 
         // Ensure response has required fields
         if (!data.enhancedDescription || !data.tags || !data.contentVector) {
-            console.error("[API:ANALYZE] Response missing required fields");
+            console.error("[API:ANALYZE] Response missing required fields!");
+            console.error("[API:ANALYZE] - Has enhancedDescription?", !!data.enhancedDescription);
+            console.error("[API:ANALYZE] - Has tags?", !!data.tags);
+            console.error("[API:ANALYZE] - Has contentVector?", !!data.contentVector);
             throw new Error('Invalid response format from AI service');
         }
 
