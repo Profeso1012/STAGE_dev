@@ -79,7 +79,16 @@ export async function POST(req: Request) {
             console.error("[API:ANALYZE] - Has enhancedDescription?", !!data.enhancedDescription);
             console.error("[API:ANALYZE] - Has tags?", !!data.tags);
             console.error("[API:ANALYZE] - Has contentVector?", !!data.contentVector);
-            throw new Error('Invalid response format from AI service');
+            const errorDetails = {
+                message: 'Invalid response format from AI service',
+                receivedData: data,
+                missingFields: {
+                    enhancedDescription: !data.enhancedDescription,
+                    tags: !data.tags,
+                    contentVector: !data.contentVector,
+                }
+            };
+            throw new Error(JSON.stringify(errorDetails));
         }
 
         const responseData = {
@@ -98,8 +107,20 @@ export async function POST(req: Request) {
         const message = error instanceof Error ? error.message : "Failed to analyze content";
         console.error("[API:ANALYZE] ERROR:", message);
         console.error("[API:ANALYZE] Full error:", error);
+
+        // Try to parse error message as JSON for detailed info
+        let errorDetails = message;
+        try {
+            errorDetails = JSON.parse(message);
+        } catch (e) {
+            // If not JSON, keep the original message
+        }
+
         return NextResponse.json(
-            { error: message },
+            {
+                error: typeof errorDetails === 'object' ? 'Invalid response format from AI service' : message,
+                details: errorDetails
+            },
             { status: 500 }
         );
     }
