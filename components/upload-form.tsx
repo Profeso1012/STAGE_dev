@@ -36,25 +36,37 @@ export function UploadForm() {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const selectedFile = e.target.files[0];
+            console.log("[UPLOAD] File selection started");
+            console.log("[UPLOAD] File name:", selectedFile.name);
+            console.log("[UPLOAD] File type:", selectedFile.type);
+            console.log("[UPLOAD] File size:", (selectedFile.size / 1024 / 1024).toFixed(2), "MB");
+
             const maxSizeInMB = 100;
             const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
             // Validate file size
             if (selectedFile.size > maxSizeInBytes) {
-                setError(`File size must be less than ${maxSizeInMB}MB. Your file is ${(selectedFile.size / 1024 / 1024).toFixed(2)}MB.`);
+                const errorMsg = `File size must be less than ${maxSizeInMB}MB. Your file is ${(selectedFile.size / 1024 / 1024).toFixed(2)}MB.`;
+                console.error("[UPLOAD] File size validation failed:", errorMsg);
+                setError(errorMsg);
                 setFile(null);
                 return;
             }
+            console.log("[UPLOAD] File size validation passed");
 
             // Validate file type
             if (!isFileSupported(selectedFile)) {
                 const fileType = getFileCategory(selectedFile);
+                console.warn("[UPLOAD] Unsupported file type detected:", fileType);
+                console.log("[UPLOAD] Showing unsupported file modal");
                 setUnsupportedFile({ name: selectedFile.name, type: fileType });
                 setFile(null);
                 setError(null);
                 return;
             }
+            console.log("[UPLOAD] File type validation passed");
 
+            console.log("[UPLOAD] File accepted and set for analysis");
             setFile(selectedFile);
             setAnalysisResult(null);
             setError(null);
@@ -63,71 +75,122 @@ export function UploadForm() {
     };
 
     const handleAnalyze = async () => {
+        console.log("[AI ANALYSIS] Starting analysis process");
+
         if (!file || !title || !description) {
-            setError("Please select a file and provide title/description.");
+            const errorMsg = "Please select a file and provide title/description.";
+            console.error("[AI ANALYSIS] Missing required fields:", { hasFile: !!file, hasTitle: !!title, hasDescription: !!description });
+            setError(errorMsg);
             return;
         }
+
+        console.log("[AI ANALYSIS] All required fields present");
+        console.log("[AI ANALYSIS] File:", file.name);
+        console.log("[AI ANALYSIS] Title:", title);
+        console.log("[AI ANALYSIS] Description:", description);
 
         setAnalyzing(true);
         setError(null);
 
         try {
+            console.log("[AI ANALYSIS] Creating FormData for API request");
             // Create FormData to send the actual file
             const formData = new FormData();
             formData.append('file', file);
             formData.append('title', title);
             formData.append('userDescription', description);
+            console.log("[AI ANALYSIS] FormData created successfully");
 
+            console.log("[AI ANALYSIS] Sending request to /api/ai/analyze");
+            const startTime = performance.now();
             const res = await fetch("/api/ai/analyze", {
                 method: "POST",
                 body: formData, // Send as multipart/form-data
             });
+            const endTime = performance.now();
+            console.log(`[AI ANALYSIS] API response received in ${(endTime - startTime).toFixed(2)}ms`);
+            console.log("[AI ANALYSIS] Response status:", res.status);
 
             const data = await res.json();
-            if (data.error) throw new Error(data.error);
+            console.log("[AI ANALYSIS] Response data:", data);
+
+            if (data.error) {
+                const errorMsg = data.error;
+                console.error("[AI ANALYSIS] API returned error:", errorMsg);
+                throw new Error(errorMsg);
+            }
+
+            console.log("[AI ANALYSIS] Analysis result received successfully");
+            console.log("[AI ANALYSIS] Enhanced description:", data.enhancedDescription);
+            console.log("[AI ANALYSIS] Tags:", data.tags);
+            console.log("[AI ANALYSIS] Confidence score:", data.confidenceScore);
+            console.log("[AI ANALYSIS] Content vector length:", data.contentVector?.length);
 
             setAnalysisResult(data);
+            console.log("[AI ANALYSIS] Analysis result set in state");
         } catch (err: any) {
-            setError(err.message || "Analysis failed");
+            const errorMsg = err.message || "Analysis failed";
+            console.error("[AI ANALYSIS] Error during analysis:", errorMsg);
+            console.error("[AI ANALYSIS] Full error:", err);
+            setError(errorMsg);
         } finally {
             setAnalyzing(false);
+            console.log("[AI ANALYSIS] Analysis process completed (finally block)");
         }
     };
 
     const handleMint = async () => {
+        console.log("[MINTING] Starting mint process");
+
         if (!isAuthenticated || !origin) {
-            setError("Please connect your wallet first.");
+            const errorMsg = "Please connect your wallet first.";
+            console.error("[MINTING] Wallet not connected:", { isAuthenticated, hasOrigin: !!origin });
+            setError(errorMsg);
             return;
         }
+        console.log("[MINTING] Wallet authenticated, walletAddress:", walletAddress);
+
         if (!file || !analysisResult) {
-            setError("Please analyze content before minting.");
+            const errorMsg = "Please analyze content before minting.";
+            console.error("[MINTING] Missing file or analysis result:", { hasFile: !!file, hasAnalysisResult: !!analysisResult });
+            setError(errorMsg);
             return;
         }
+        console.log("[MINTING] File and analysis result present");
 
         // Validate inputs
         const priceNum = parseFloat(price);
         const royaltyNum = parseFloat(royalty);
+        console.log("[MINTING] Input values - Price:", priceNum, "Royalty:", royaltyNum);
 
         if (isNaN(priceNum) || priceNum < 0.001) {
-            setError("Price must be at least 0.001 CAMP.");
+            const errorMsg = "Price must be at least 0.001 CAMP.";
+            console.error("[MINTING] Price validation failed:", priceNum);
+            setError(errorMsg);
             return;
         }
 
         if (isNaN(royaltyNum) || royaltyNum < 0 || royaltyNum > 100) {
-            setError("Royalty must be between 0% and 100%.");
+            const errorMsg = "Royalty must be between 0% and 100%.";
+            console.error("[MINTING] Royalty validation failed:", royaltyNum);
+            setError(errorMsg);
             return;
         }
+        console.log("[MINTING] Input validation passed");
 
         setMinting(true);
         setError(null);
 
         try {
+            console.log("[MINTING] Step 1: Creating License Terms");
             // 1. Create License Terms
             // Price in wei (1 CAMP = 10^18 wei)
             // For simplicity, assuming input is in CAMP
             const priceWei = BigInt(Math.floor(priceNum * 1e18));
             // Royalty in bps (1% = 100 bps)
             const royaltyBps = Math.floor(royaltyNum * 100);
+            console.log("[MINTING] Price in wei:", priceWei.toString());
+            console.log("[MINTING] Royalty in bps:", royaltyBps);
 
             const license = createLicenseTerms(
                 priceWei,
@@ -135,7 +198,9 @@ export function UploadForm() {
                 royaltyBps,
                 zeroAddress // Native currency
             );
+            console.log("[MINTING] License terms created successfully");
 
+            console.log("[MINTING] Step 2: Preparing metadata");
             // 2. Prepare Metadata
             const metadata = {
                 name: title,
@@ -144,47 +209,78 @@ export function UploadForm() {
                     { trait_type: "Original Description", value: description },
                     ...analysisResult.tags.map((tag: string) => ({ trait_type: "Tag", value: tag })),
                 ],
-                // Add AI vector to metadata if needed, or just keep it for indexing
             };
+            console.log("[MINTING] Metadata prepared:", metadata);
 
+            console.log("[MINTING] Step 3: Minting file to blockchain");
+            console.log("[MINTING] Calling origin.mintFile with file:", file.name);
+            const startMintTime = performance.now();
             // 3. Mint File
-            // Note: In a real app, we might want to use the AI-generated vector here? 
             // The Origin SDK mintFile uploads the file to IPFS/Arweave via their service.
             const tokenId = await origin.mintFile(file, metadata, license);
+            const endMintTime = performance.now();
+            console.log(`[MINTING] mintFile completed in ${(endMintTime - startMintTime).toFixed(2)}ms`);
 
-            if (!tokenId) throw new Error("Minting returned no Token ID");
+            if (!tokenId) {
+                console.error("[MINTING] mintFile returned no Token ID");
+                throw new Error("Minting returned no Token ID");
+            }
+            console.log("[MINTING] Token ID received:", tokenId);
+
+            console.log("[MINTING] Step 4: Indexing minted item");
+            const indexPayload = {
+                id: tokenId,
+                title: title,
+                description: analysisResult.enhancedDescription,
+                tags: analysisResult.tags,
+                fileType: file.type,
+                fileUrl: `https://ipfs.io/ipfs/...`,
+                owner: walletAddress,
+                price: price,
+                vector: analysisResult.contentVector,
+            };
+            console.log("[MINTING] Index payload prepared:", indexPayload);
 
             // 4. Index the minted item in our AI Service (Mock DB)
-            await fetch("/api/ai/index", {
+            console.log("[MINTING] Sending index request to /api/ai/index");
+            const startIndexTime = performance.now();
+            const indexRes = await fetch("/api/ai/index", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    id: tokenId,
-                    title: title,
-                    description: analysisResult.enhancedDescription,
-                    tags: analysisResult.tags,
-                    fileType: file.type,
-                    fileUrl: `https://ipfs.io/ipfs/...`, // In real app, we'd get the CID from mint result if possible or assume it
-                    owner: walletAddress,
-                    price: price,
-                    vector: analysisResult.contentVector,
-                }),
+                body: JSON.stringify(indexPayload),
             });
+            const endIndexTime = performance.now();
+            console.log(`[MINTING] Index request completed in ${(endIndexTime - startIndexTime).toFixed(2)}ms`);
+            console.log("[MINTING] Index response status:", indexRes.status);
 
-            setSuccess(`Successfully minted IP-NFT! Token ID: ${tokenId}`);
+            const indexData = await indexRes.json();
+            console.log("[MINTING] Index response data:", indexData);
+
+            const successMsg = `Successfully minted IP-NFT! Token ID: ${tokenId}`;
+            console.log("[MINTING] SUCCESS:", successMsg);
+            setSuccess(successMsg);
+
+            console.log("[MINTING] Resetting form state");
             setFile(null);
             setTitle("");
             setDescription("");
             setAnalysisResult(null);
 
+            console.log("[MINTING] Redirecting to /discovery in 2 seconds");
             // Redirect to profile or discovery after short delay
-            setTimeout(() => router.push("/discovery"), 2000);
+            setTimeout(() => {
+                console.log("[MINTING] Redirecting now");
+                router.push("/discovery");
+            }, 2000);
 
         } catch (err: any) {
-            console.error(err);
-            setError(err.message || "Minting failed");
+            const errorMsg = err.message || "Minting failed";
+            console.error("[MINTING] ERROR during minting:", errorMsg);
+            console.error("[MINTING] Full error object:", err);
+            setError(errorMsg);
         } finally {
             setMinting(false);
+            console.log("[MINTING] Minting process completed (finally block)");
         }
     };
 
